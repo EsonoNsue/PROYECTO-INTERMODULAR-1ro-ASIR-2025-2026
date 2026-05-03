@@ -1,0 +1,21 @@
+<!ELEMENT shopnet (inventario, pedidos)>
+<!ELEMENT inventario (producto+)>
+<!ELEMENT producto (nombre, marca, precio)>
+<!ATTLIST producto
+    sku ID #REQUIRED
+    stock CDATA #REQUIRED
+    categoria (perifericos | componentes | consola) "perifericos">
+<!ELEMENT pedidos (pedido*)>
+<!ELEMENT pedido (cliente, articulo+, fecha_compra)>
+<!ATTLIST pedido
+    id_compra ID #REQUIRED
+    estado (pendiente | enviado | entregado) "pendiente">
+<!ELEMENT cliente (#PCDATA)>
+<!ELEMENT articulo (#PCDATA)>
+<!ATTLIST articulo
+    referencia IDREF #REQUIRED
+    uds CDATA "1">
+<!ELEMENT nombre (#PCDATA)>
+<!ELEMENT marca (#PCDATA)>
+<!ELEMENT precio (#PCDATA)>
+<!ELEMENT fecha_compra (#PCDATA)>

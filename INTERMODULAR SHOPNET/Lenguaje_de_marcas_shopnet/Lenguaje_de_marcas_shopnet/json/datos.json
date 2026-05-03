@@ -1,0 +1,31 @@
+{
+  "shopnet": {
+    "inventario": [
+      {
+        "sku": "SKU-9910",
+        "nombre": "Teclado Mecánico RGB",
+        "marca": "Razer",
+        "precio": 89.99,
+        "stock": 25,
+        "categoria": "perifericos"
+      },
+      {
+        "sku": "SKU-4420",
+        "nombre": "Monitor 4K 144Hz",
+        "marca": "MSI",
+        "precio": 349.00,
+        "stock": 8,
+        "categoria": "monitores"
+      }
+    ],
+    "pedidos": [
+      {
+        "id_compra": "PED-2025-001",
+        "estado": "enviado",
+        "cliente": "Juan Pérez",
+        "fecha": "2025-04-23",
+        "total": 89.99
+      }
+    ]
+  }
+}

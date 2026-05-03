@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE shopnet SYSTEM "modelo.dtd">
+<?xml-stylesheet type="text/xsl" href="transform.xsl"?>
+<shopnet>
+    <inventario>
+        <producto sku="PROD-001" stock="45" categoria="perifericos">
+            <nombre>Ratón Gaming RGB</nombre>
+            <marca>Logitech</marca>
+            <precio>59.99</precio>
+        </producto>
+        <producto sku="PROD-002" stock="12" categoria="componentes">
+            <nombre>Tarjeta gráfica RTX 4060</nombre>
+            <marca>Nvidia</marca>
+            <precio>329.50</precio>
+        </producto>
+    </inventario>
+    <pedidos>
+        <pedido id_compra="ORD-2026-01" estado="enviado">
+            <cliente>Juan Pérez García</cliente>
+            <articulo referencia="PROD-001" uds="2">Ratón Gaming RGB</articulo>
+            <fecha_compra>2026-04-20</fecha_compra>
+        </pedido>
+        <pedido id_compra="ORD-2026-02" estado="pendiente">
+            <cliente>Ana López</cliente>
+            <articulo referencia="PROD-002" uds="1">Tarjeta gráfica RTX 4060</articulo>
+            <fecha_compra>2026-04-21</fecha_compra>
+        </pedido>
+    </pedidos>
+</shopnet>
