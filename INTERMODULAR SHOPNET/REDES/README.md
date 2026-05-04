@@ -1,57 +1,140 @@
 # 🖧 Proyecto Intermodular: Implantación y Administración de Redes
 ## 🏢 Proyecto: SHOPNET - Tienda Online con Gestión Interna
 
-Este proyecto consiste en el diseño e implementación de una infraestructura de red robusta para **SHOPNET**, una tienda online que requiere una gestión interna eficiente y segura.
+Este proyecto consiste en el diseño e implementación de una infraestructura de red para una tienda online con gestión interna llamada **SHOPNET**.
 
-### 🎯 Objetivos Principales
-*   **Escalable** 📈: Preparada para el crecimiento de la empresa.
-*   **Segura** 🔒: Segmentación estricta de datos.
-*   **Alta disponibilidad** ⚡: Redundancia y resiliencia.
-*   **Fácil de administrar** 🛠️: Gestión centralizada.
+El objetivo principal es construir una red:
 
----
+*   **Escalable** 📈
+*   **Segura** 🔒
+*   **Alta disponibilidad** ⚡
+*   **Fácil de administrar** 🛠️
 
-## 🚀 Tecnologías Utilizadas
-*   **VLANs** (Segmentación de red)
-*   **InterVLAN Routing** (SVI en Capa 3)
+Se han utilizado tecnologías como:
+
+*   **VLANs**
+*   **InterVLAN Routing**
 *   **VTP** (VLAN Trunking Protocol)
-*   **DHCP** (Asignación dinámica de IPs)
-*   **ACLs** (Listas de Control de Acceso para seguridad)
-
----
+*   **DHCP**
+*   **ACLs** (Listas de Control de Acceso)
 
 ## 🌐 Topología de Red
-Se ha implementado una **topología en estrella jerárquica** compuesta por:
 
-1.  **Core / Server (Switch Capa 3):** El cerebro y núcleo de la red.
-2.  **Distribución (Switches Capa 2):** Repartidos por las 3 plantas del edificio.
-3.  **Borde (Router):** Gestión de la salida a Internet.
+Se implementa una topología en estrella jerárquica con:
 
-### 🧩 Diseño con VTP
-Para la gestión de las VLANs, se configuró un dominio VTP con la siguiente lógica:
+*   🧠 **Switch Capa 3 (Core / Server)** → Núcleo de la red
+*   🔀 **Switches Capa 2** → Distribución por plantas
+*   🌍 **Router** → Salida a Internet
+
+## 🏢 Estructura
+
+*   3 plantas
+*   3 switches principales:
+    *   2 en modo **Client**
+    *   1 en modo **Transparent** (por seguridad)
+
+## 🧩 Diseño con VTP
+
+Se implementa VTP para gestión de VLANs:
 
 | Modo | Función |
 | :--- | :--- |
-| **Server** | Crea, modifica y administra las VLANs de toda la red. |
-| **Client** | Aprende y sincroniza automáticamente las VLANs del Server. |
-| **Transparent** | No depende del Server; mejora la resiliencia ante fallos en la cadena. |
+| **Server** | Crea y administra VLANs |
+| **Client** | Aprende VLANs del Server |
+| **Transparent** | No depende del Server, configuración manual |
 
-> [!TIP]
-> **Decisión clave:** Se configuró un switch en modo **Transparent** para evitar una dependencia total del servidor VTP, garantizando que un fallo en la propagación no afecte a áreas críticas.
+## 🔐 Decisión clave
 
----
+Un switch se configura en modo **Transparent** para evitar dependencia total del servidor y mejorar la resiliencia ante fallos.
+## ⚙️ Configuración de Red
 
-## ⚙️ Implementación Técnica
+### 1. 🔗 Enlaces Trunk
 
-### 1. Enlaces Trunk y VLAN Nativa
-Se establecieron enlaces troncales entre todos los dispositivos intermedios. Se cambió la VLAN nativa por defecto a la **VLAN 99 (Gestión)** para mitigar ataques de *VLAN Hopping*.
+*   Configuración inicial de enlaces entre switches.
+*   Uso de VLAN nativa (posteriormente cambiada a **VLAN 99**).
 
-### 2. InterVLAN Routing
-En lugar de usar *Router-on-a-Stick*, se utilizó el **Switch de Capa 3** para mejorar el rendimiento y evitar cuellos de botella:
-```bash
-# Activación del enrutamiento en el Core Switch
-Switch(config)# ip routing
+### 2. 🧱 Configuración VTP y VLANs
 
-# Ejemplo de creación de interfaz virtual (SVI)
-Switch(config)# interface vlan 10
-Switch(config-if)# ip address 192.168.10.1 255.255.255.0
+*   Configuración de dominio VTP.
+*   Definición de contraseña.
+*   Asignación de modos (**Server**, **Client**, **Transparent**).
+*   Creación de VLANs por departamento.
+
+### 3. 🏷️ VLAN Nativa
+
+*   Cambio de VLAN nativa a: **VLAN 99 (Gestión)**.
+
+### 🔄 InterVLAN Routing
+
+*   Configuración en switch capa 3.
+*   Permite la comunicación entre diferentes VLANs.
+*   Se crean interfaces virtuales (**SVI**) para cada VLAN.
+*   El switch actúa como gateway de cada red.
+*   Activación del enrutamiento:
+    `ip routing`
+
+### 5. 📡 DHCP
+
+*   Implementación en servidor.
+*   Creación de **pools** por VLAN:
+    *   IP
+    *   Máscara
+    *   Gateway
+    *   DNS
+*   Configuración de `ip helper-address` en interfaces VLAN.
+
+### 6. 🌍 Conexión a Internet
+
+*   Enlace entre switch capa 3 y router.
+*   Configuración:
+    *   `no switchport` en interfaz del switch.
+    *   Asignación de IP **/30**.
+    *   Activación de interfaces.
+
+## 🔐 Seguridad: ACLs
+Se implementan reglas para restringir el acceso entre departamentos:
+
+### 📊 Políticas por VLAN
+
+| VLAN | Departamento | Acceso |
+| :--- | :--- | :--- |
+| **10** | Administración | Acceso limitado al servidor (HTTPS 443, SMB 445) |
+| **20** | Atención al cliente | Solo acceso a logística |
+| **15** | Contabilidad | Acceso limitado al servidor + administración |
+| **40** | Logística | Acceso limitado al servidor + atención al cliente |
+| **60** | Desarrollo | Acceso completo al servidor, restringido a otros departamentos |
+| **70** | WiFi | Totalmente aislado |
+
+### 📶 Red WiFi
+
+*   VLAN dedicada para WiFi (**VLAN 70**).
+*   Acceso completamente restringido a red interna.
+*   Solo salida controlada.
+
+### 🧠 Decisiones Técnicas
+
+*   Uso de **VTP** para gestión centralizada.
+*   Implementación de **Switch Transparent** para alta disponibilidad.
+*   Uso de **InterVLAN Routing** en lugar de *Router-on-a-Stick*:
+    *   Mejor rendimiento.
+    *   Evita cuellos de botella.
+*   Segmentación por departamentos para seguridad y eficiencia.
+
+### ✅ Resultados
+
+*   ✔️ Comunicación interna controlada.
+*   ✔️ Acceso a Internet funcional.
+*   ✔️ DHCP operativo en toda la red.
+*   ✔️ Seguridad mediante ACLs.
+*   ✔️ WiFi completamente aislado.
+*   ✔️ Red escalable y robusta.
+
+### 🧾 Conclusiones
+
+La infraestructura diseñada para **SHOPNET** cumple con los requisitos de:
+*   Alta disponibilidad.
+*   Seguridad interna.
+*   Escalabilidad.
+*   Facilidad de gestión.
+
+El uso de tecnologías como **VTP**, **InterVLAN** y **ACLs** permite una red eficiente, preparada para crecimiento futuro y adaptada a un entorno empresarial real.
