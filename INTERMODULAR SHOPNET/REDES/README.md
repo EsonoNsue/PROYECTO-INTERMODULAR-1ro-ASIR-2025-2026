@@ -64,7 +64,7 @@ Un switch se configura en modo **Transparent** para evitar dependencia total del
 
 *   Cambio de VLAN nativa a: **VLAN 99 (Gestión)**.
 
-### 🔄 InterVLAN Routing
+### 4. 🔄 InterVLAN Routing
 
 *   Configuración en switch capa 3.
 *   Permite la comunicación entre diferentes VLANs.
