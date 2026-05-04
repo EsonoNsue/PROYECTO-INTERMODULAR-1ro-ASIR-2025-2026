@@ -1,27 +1,30 @@
-# Arquitectura Cloud Propuesta para ShopNet
+## ☁️ Arquitectura Cloud Propuesta para ShopNet
 
-La arquitectura de ShopNet está diseñada siguiendo un modelo de **Tres Capas** para separar la interfaz del usuario de la lógica de negocio y los datos.
+La infraestructura de **ShopNet** en la nube sigue un modelo de **Tres Capas (3-Tier Architecture)**, garantizando una separación clara entre la interfaz de usuario, la lógica de negocio y la persistencia de datos.
 
-### Componentes:
-1. **Capa de Presentación (Frontend):** Alojada en **Amazon S3** y distribuida globalmente mediante **Amazon CloudFront** para que la web cargue instantáneamente.
-2. **Capa de Aplicación (Backend):** Servidores **Amazon EC2** que gestionan el carrito de la compra y el procesamiento de pagos.
-3. **Capa de Datos:** **Amazon RDS** para almacenar el inventario de productos y el historial de pedidos de los clientes.
+### 🏗️ Componentes de la Infraestructura
 
-### Esquema de Red:
-`Usuario -> CloudFront (CDN) -> Servidor EC2 -> Base de Datos RDS`
+| Capa | Servicio AWS | Función Principal |
+| :--- | :--- | :--- |
+| **Presentación** | `Amazon S3` + `CloudFront` | Alojamiento del Frontend estático y distribución global (CDN) para baja latencia. |
+| **Aplicación** | `Amazon EC2` | Instancias de cómputo que procesan el carrito, pagos y lógica de negocio. |
+| **Datos** | `Amazon RDS` | Base de datos relacional gestionada para inventario y usuarios. |
 
-[ CLIENTE SHOPNET ]
-                |
-                | (HTTPS / Puerto 443)
-                v
-       [ AWS CLOUD - SPAIN ]
-    +---------------------------+
-    |  [ Amazon CloudFront ]    | <-- Entrega rápida de la web
-    |           |               |
-    |  [ Servidor EC2 ]         | <-- Lógica de pedidos
-    |           |               |
-    |  [ Base Datos RDS ]       | <-- Stock y Clientes
-    +---------------------------+
-                |
-                v
-       [ Amazon S3 Storage ]      <-- Fotos de productos
+---
+
+### 🗺️ Esquema de Flujo y Conectividad
+
+Para visualizar cómo interactúa el cliente con la infraestructura en la región de España:
+```mermaid
+graph TD
+    User((Usuario Final)) -->|HTTPS/443| CF[Amazon CloudFront]
+    CF -->|Contenido Estático| S3[(Amazon S3)]
+    CF -->|Solicitudes Dinámicas| EC2[Servidores Amazon EC2]
+    EC2 -->|Consultas SQL| RDS[(Amazon RDS)]
+    
+    subgraph "AWS Cloud - Región España"
+    CF
+    S3
+    EC2
+    RDS
+    end
